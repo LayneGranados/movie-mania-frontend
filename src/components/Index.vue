@@ -34,49 +34,7 @@
   </div>
 </template>
 <script>
-import db from "@/firebase/init";
 
-export default {
-  name: "Index",
-  data() {
-    return {
-      books: [],
-      search: ""
-    };
-  },
-  methods: {
-    deleteBook(id) {
-      // Delete doc from Firestore
-      db.collection("books")
-        .doc(id)
-        .delete()
-        .then(() => {
-          this.books = this.books.filter(book => {
-            return book.id != id;
-          });
-        });
-    }
-  },
-  created() {
-    // Fetch data from firestore
-    db.collection("books")
-      .get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          let book = doc.data();
-          book.id = doc.id;
-          this.books.push(book);
-        });
-      });
-  },
-  computed: {
-    filteredBooks() {
-      return this.books.filter(book => {
-        return book.title.toLowerCase().includes(this.search.toLowerCase());
-      });
-    }
-  }
-};
 </script>
 
 <style scoped>

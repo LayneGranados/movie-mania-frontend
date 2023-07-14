@@ -26,59 +26,7 @@
 </template>
 
 <script>
-import db from "@/firebase/init";
-import slugify from "slugify";
 
-export default {
-  name: "EditBook",
-  data() {
-    return {
-      book: null,
-      feedback: null
-    };
-  },
-  methods: {
-    EditBook() {
-      if (this.book.title) {
-        // Create a slug
-        this.book.slug = slugify(this.book.title, {
-          replacement: "-",
-          remove: /[$*_+~.()'"!\-:@]/g,
-          lower: true
-        });
-        // Send data to firestore
-        db.collection("books")
-          .doc(this.book.id)
-          .update({
-            title: this.book.title,
-            author: this.book.author,
-            genre: this.book.genre,
-            language: this.book.language,
-            slug: this.book.slug
-          })
-          // Receive it back to the UI
-          .then(() => {
-            this.$router.push({ name: "Index" });
-          })
-          // In case there are errors.
-          .catch(err => {
-            console.log(err);
-          });
-      }
-    }
-  },
-  created() {
-    let ref = db
-      .collection("books")
-      .where("slug", "==", this.$route.params.book_slug);
-    ref.get().then(snapshot => {
-      snapshot.forEach(doc => {
-        this.book = doc.data();
-        this.book.id = doc.id;
-      });
-    });
-  }
-};
 </script>
 
 <style>
